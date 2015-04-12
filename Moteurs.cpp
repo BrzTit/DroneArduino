@@ -95,6 +95,21 @@ void Moteurs::equilibre()
   
   Serial.println("");
   */
+
+  int rotX = getRotationX();
+  int rotY = getRotationY();
+  
+  if(rotX >= -2 && rotX <= 2)
+    rotX = 0;
+    
+  if(rotY >= -2 && rotY <= 2)
+    rotY = 0;
+  
+  Serial.print(rotX);
+  Serial.print("\t");
+  Serial.print(rotY);
+  Serial.println(" ");
+
 }
 
 void Moteurs::setVitesse(char lecture)
@@ -121,7 +136,7 @@ void Moteurs::setVitesse(char lecture)
 void Moteurs::depart()
 {
   int i;
-  Serial.println("Depart");
+  
   for(i=0; i < vitesseDepart; i++)
   {
      for(int e=0; e<4; e++)
