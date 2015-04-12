@@ -17,6 +17,8 @@ void Moteurs::init()
     moteur[i].write(vitesse[i]);
     test.write(vitesse[i]);
   }
+  
+  enVol = false;
 }
 
 void Moteurs::updateAngle(int16_t valAngle[])
@@ -70,6 +72,7 @@ int Moteurs::getRotationY()
 
 void Moteurs::equilibre()
 {
+  /*
   vitesse[0] -= getRotationX();
   vitesse[2] -= getRotationX();
   
@@ -91,7 +94,7 @@ void Moteurs::equilibre()
   Serial.print(vitesse[3]);
   
   Serial.println("");
-  
+  */
 }
 
 void Moteurs::setVitesse(char lecture)
@@ -100,8 +103,13 @@ void Moteurs::setVitesse(char lecture)
     vitesseGlobale += 1;
   else if(lecture == 'a')
     vitesseGlobale -= 1;
-  else if(lecture == 's')
-    vitesseGlobale = 0;
+  else if(lecture == 's') // Commande urgence
+  {
+     for(int i=0; i < 4; i++)
+      moteur[i].write(0);
+     vitesseGlobale = 0;
+      Serial.println("Stop");
+  }
   else if(lecture == 'd')
     depart();
     
@@ -113,25 +121,28 @@ void Moteurs::setVitesse(char lecture)
 void Moteurs::depart()
 {
   int i;
- 
-  for(i=0; i < 25; i++)
+  Serial.println("Depart");
+  for(i=0; i < vitesseDepart; i++)
   {
      for(int e=0; e<4; e++)
        moteur[e].write(i);
      test.write(i);
      delay(300);
   } 
-  vitesseGlobale = 25;
+  vitesseGlobale = vitesseDepart;
   
 }
 
 void Moteurs::deplacer()
 {
   int i;
+  enVol = vitesseGlobale >= 25; // Sinon moteurs ne tournent pas
   
-  for(i=0; i < 4; i++)
-    moteur[i].write(vitesse[i] + 10); // DEbug servoMoteur
-    
-  test.write(vitesseGlobale + 5);
-  
+  if(enVol)
+  {
+    for(i=0; i < 4; i++)
+      moteur[i].write(vitesse[i]);
+      
+    test.write(vitesseGlobale + 10);
+  }
 }

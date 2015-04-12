@@ -16,6 +16,10 @@ class Moteurs
     
     int valErreurAngleX;
     int valErreurAngleY;
+    
+    boolean enVol;
+    
+    const int vitesseDepart = 50;
 
   public:
     void init();
